@@ -30,7 +30,7 @@ responses:
   - text: "Markas besar miloo berada di Jalan Danau Laut Tawar no A69, Bendungan Hilir, Jakarta Pusat"
 
   utter_channel:
-  - text: "Kamu bisa cek miloo di Instagram https://www.instagram.com/miloo.project/ , Linkedin https://www.linkedin.com/company/milooproject/ , Facebook page https://www.facebook.com/milooproject/, Spotify https://open.spotify.com/show/1fbywVKi9L0ebmDErFkhLX?si=290GXrsnSdyrCyY2md_cYQ, Kumparan Story https://kumparan.com/milo-project, dan Youtube https://www.youtube.com/channel/UCZO6kJMmGEp05ITnwICxl_A."
+  - text: "Kamu bisa cek miloo di [Instagram](https://www.instagram.com/miloo.project/), [Linkedin] (https://www.linkedin.com/company/milooproject/), [Facebook page] (https://www.facebook.com/milooproject/), [Spotify](https://open.spotify.com/show/1fbywVKi9L0ebmDErFkhLX?si=290GXrsnSdyrCyY2md_cYQ), [Kumparan Story](https://kumparan.com/milo-project), dan [Youtube] (https://www.youtube.com/channel/UCZO6kJMmGEp05ITnwICxl_A)."
 
   utter_event:
   - text: "Jadwal event akan kami infokan di channel-channel milik miloo, jadi pantengin terus yaa"
