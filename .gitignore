@@ -3,3 +3,4 @@ models/
 test.py
 *.ipynb
 __pycache__/
+venv
