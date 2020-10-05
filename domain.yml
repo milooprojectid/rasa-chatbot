@@ -3,12 +3,20 @@ version: "2.0"
 intents:
   - greet
   - goodbye
-  - miloo
-  - visi
-  - misi
-  - hq
-  - channel
-  - event
+  - faq
+  - thanks
+  - regist_event
+  - affirm
+  - deny
+  # - miloo
+  # - visi
+  # - misi
+  # - hq
+  # - channel
+  # - event
+
+actions:
+  - respond_faq
 
 responses:
   utter_greet:
@@ -21,23 +29,35 @@ responses:
     - text: "Sampai jumpa"
     - text: "Sampai jumpa lagi"
 
-  utter_miloo:
-    - text: "Miloo Project adalah sebuah platform gerakan pemenuhan skill anak muda. Disini kita akan belajar dunia Hacker, Hipster, Hound, dan Hustler. Ikuti info setiap kegiatannya di Instagram @miloo.project agar kita bisa sama-sama membangun SDM yang maju."
+  utter_thanks:
+    - text: "Sama-sama"
 
-  utter_visi:
-    - text: "Miloo fokus pada 4 kegiatan utamanya. yakni Sharing, Research, Develoment dan Campaign."
+  utter_conf_event:
+    - text: "Selamat datang di form registrasi event Miloo. Kamu akan dipandu untuk mengisi form registrasi. Apakah kamu bersedia melanjutkan?"
 
-  utter_misi:
-    - text: "Tujuan utamanya yakni ingin memperkecil gap kebutuhan Indonesia terhadap tenaga kerja berskill yang tiap tahunnya kekurangan 3,8 juta."
+  utter_regist_success:
+    - text: "Terima kasih telah mengisi form registrasi event Miloo. Untuk link event akan diberikan melalui email."
 
-  utter_hq:
-    - text: "Markas besar miloo berada di Jalan Danau Laut Tawar no A69, Bendungan Hilir, Jakarta Pusat"
+  utter_regist_failed:
+    - text: "Terima kasih telah memberikan response. Kamu bisa mendapat info seputar event-event Miloo di channel dan akun media sosial miloo"
 
-  utter_channel:
-    - text: "Kamu bisa cek miloo di\n [Instagram](https://www.instagram.com/miloo.project/)\n [Linkedin] (https://www.linkedin.com/company/milooproject/)\n [Facebook page] (https://www.facebook.com/milooproject/)\n [Spotify](https://open.spotify.com/show/1fbywVKi9L0ebmDErFkhLX?si=290GXrsnSdyrCyY2md_cYQ)\n [Kumparan Story](https://kumparan.com/milo-project)\n [Youtube] (https://www.youtube.com/channel/UCZO6kJMmGEp05ITnwICxl_A)"
+  # utter_miloo:
+  #   - text: "Miloo Project adalah sebuah platform gerakan pemenuhan skill anak muda. Disini kita akan belajar dunia Hacker, Hipster, Hound, dan Hustler. Ikuti info setiap kegiatannya di Instagram @miloo.project agar kita bisa sama-sama membangun SDM yang maju."
 
-  utter_event:
-    - text: "Jadwal event akan kami infokan di channel dan akun media sosial miloo, jadi pantengin terus yaa"
+  # utter_visi:
+  #   - text: "Miloo fokus pada 4 kegiatan utamanya. yakni Sharing, Research, Develoment dan Campaign."
+
+  # utter_misi:
+  #   - text: "Tujuan utamanya yakni ingin memperkecil gap kebutuhan Indonesia terhadap tenaga kerja berskill yang tiap tahunnya kekurangan 3,8 juta."
+
+  # utter_hq:
+  #   - text: "Markas besar miloo berada di Jalan Danau Laut Tawar no A69, Bendungan Hilir, Jakarta Pusat"
+
+  # utter_channel:
+  #   - text: "Kamu bisa cek miloo di\n [Instagram](https://www.instagram.com/miloo.project/)\n [Linkedin] (https://www.linkedin.com/company/milooproject/)\n [Facebook page] (https://www.facebook.com/milooproject/)\n [Spotify](https://open.spotify.com/show/1fbywVKi9L0ebmDErFkhLX?si=290GXrsnSdyrCyY2md_cYQ)\n [Kumparan Story](https://kumparan.com/milo-project)\n [Youtube] (https://www.youtube.com/channel/UCZO6kJMmGEp05ITnwICxl_A)"
+
+  # utter_event:
+  #   - text: "Jadwal event akan kami infokan di channel dan akun media sosial miloo, jadi pantengin terus yaa"
 
 session_config:
   session_expiration_time: 60

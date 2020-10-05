@@ -1,0 +1,10 @@
+[
+  {
+    "text": "tidak",
+    "intent": "no",
+    "intent_prediction": {
+      "name": "thanks",
+      "confidence": 0.6650645136833191
+    }
+  }
+]

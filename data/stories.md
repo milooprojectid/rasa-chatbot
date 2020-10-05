@@ -2,30 +2,26 @@
 * greet
   - utter_greet
 
-## miloo path
-* miloo
-  - utter_miloo
-
-## visi path
-* visi
-  - utter_visi
-
-## misi path
-* misi
-  - utter_misi
-
 ## say goodbye
 * goodbye
   - utter_goodbye
 
-## hq path
-* hq
-  - utter_hq
+## say thanks
+* thanks
+  - utter_thanks
 
-## channel path
-* channel
-  - utter_channel
+## respond_faq
+* faq
+  - respond_faq
 
-## event path
-* event
-  - utter_event
+## Regist_event_succeed
+* regist_event
+  - utter_conf_event
+* affirm
+  - utter_regist_success
+
+## Regist_event_failed
+* regist_event
+  - utter_conf_event
+* deny
+  - utter_regist_failed
