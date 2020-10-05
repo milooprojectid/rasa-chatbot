@@ -15,8 +15,20 @@ intents:
   # - channel
   # - event
 
+slots:
+  nama:
+    type: text
+  email:
+    type: text
+  no_telfon:
+    type: text
+
 actions:
   - respond_faq
+  # - regist_form
+
+forms:
+  - regist_form
 
 responses:
   utter_greet:
@@ -40,6 +52,15 @@ responses:
 
   utter_regist_failed:
     - text: "Terima kasih telah memberikan response. Kamu bisa mendapat info seputar event-event Miloo di channel dan akun media sosial miloo"
+
+  utter_ask_nama:
+    - text: "namamu?"
+
+  utter_ask_email:
+    - text: "emailmu?"
+
+  utter_ask_no_telfon:
+    - text: "no telfon?"
 
   # utter_miloo:
   #   - text: "Miloo Project adalah sebuah platform gerakan pemenuhan skill anak muda. Disini kita akan belajar dunia Hacker, Hipster, Hound, dan Hustler. Ikuti info setiap kegiatannya di Instagram @miloo.project agar kita bisa sama-sama membangun SDM yang maju."
