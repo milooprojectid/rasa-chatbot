@@ -61,19 +61,51 @@ class RegistForm(FormAction):
                  dispatcher: CollectingDispatcher,
                  tracker: Tracker,
                  domain: Dict[Text, Any]) -> List[Dict]:
+
+
+        ask_nama = "namamu?"
+        ask_email = "emailmu?"
+        ask_telfon = "no telfon?"
         
-        print("Wawawawa")
-        print(tracker.latest_message["text"])
-        print(tracker)
-        print(dir(tracker))
-        print(tracker.slots, tracker.current_state, tracker.latest_action_name)
+        # print("----------------------------------------------------")
+        # print(dir(dispatcher))
+        # print(dispatcher.messages, dispatcher.utter_message())
+        # print("Wawawawa")
+        # print(tracker.latest_message["text"])
         # print(tracker.latest_message)
-        if "nama" in tracker.latest_message["text"]:
-            return [SlotSet("nama", tracker.latest_message["text"])]
-        elif "email" in tracker.latest_message["text"]:
-            return [SlotSet("email", tracker.latest_message["text"])]
-        elif "telfon" in tracker.latest_message["text"]:
-            return [SlotSet("no_telfon", tracker.latest_message["text"])]
+        # print(dir(tracker))
+        # print(dir(tracker.current_state))
+        # print(tracker.slots, tracker.latest_action_name, tracker.followup_action, tracker.get_latest_input_channel(), tracker.events, tracker.events_after_latest_restart, tracker.active_form)
+        # print(tracker.followup_action, tracker.applied_events(), tracker.slots)
+        i = len(tracker.events) - 1
+        while i >= 0 and tracker.events[i]["event"] != "bot":
+            print(tracker.events[i]["event"])
+            i -= 1
+        # print(tracker.events[i]["event"])
+        # if tracker.events[i]["event"] == "bot":
+
+        #     print(tracker.events[i]["text"])
+        # print(tracker.events[-4])
+        # print(tracker.events[-4]["text"])
+        # print(tracker.latest_message)
+        if tracker.events[i]["event"] == "bot":
+            if tracker.events[i]["text"] == ask_nama:
+                return [SlotSet("nama", tracker.latest_message["text"])]
+            if tracker.events[i]["text"] == ask_email:
+                if '@' in tracker.latest_message["text"]:
+                    return [SlotSet("email", tracker.latest_message["text"])]
+                else:
+                    dispatcher.utter_message("Email yang kamu masukan tidak valid")
+            if tracker.events[i]["text"] == ask_telfon:
+                return [SlotSet("no_telfon", tracker.latest_message["text"])]
+            # print("emailnya: ", tracker.latest_message["text"])
+
+        # if "nama" in tracker.latest_message["text"]:
+        #     return [SlotSet("nama", tracker.latest_message["text"])]
+        # elif "email" in tracker.latest_message["text"]:
+        #     return [SlotSet("email", tracker.latest_message["text"])]
+        # elif "telfon" in tracker.latest_message["text"]:
+        #     return [SlotSet("no_telfon", tracker.latest_message["text"])]
         # if 
         # slot_values = self.extract_other_slots(dispatcher, tracker, domain)
         # slot_to_fill = tracker.get_slot(REQUESTED_SLOT)
@@ -86,6 +118,10 @@ class RegistForm(FormAction):
 
         # return [SlotSet(slot, value) for slot, value in slot_values.items()]
         # return [SlotSet("nama", "Fahmi"), SlotSet("email", "Fahmi@a.com"), SlotSet("no_telfon", "09890")]
+        return []
+    
+    def slot_mappings(self):
+        print("masuk slot mapping")
         return []
 
     def submit(self, dispatcher: CollectingDispatcher,
