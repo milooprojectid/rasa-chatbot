@@ -27,7 +27,6 @@ responses:
   utter_greet:
     - text: "Hai"
     - text: "Halo"
-    - text: "Iya"
 
   utter_goodbye:
     - text: "Bye"
@@ -54,6 +53,9 @@ responses:
 
   utter_ask_no_telfon:
     - text: "no telfon?"
+
+  utter_default:
+    - text: Maaf, saya tidak mengerti apa yang kamu tanyakan.
 
 session_config:
   session_expiration_time: 60

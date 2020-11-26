@@ -1,9 +1,3 @@
-# This files contains your custom actions which can be used to run
-# custom Python code.
-#
-# See this guide on how to implement these action:
-# https://rasa.com/docs/rasa/core/actions/#custom-actions/
-
 from typing import Any, Text, Dict, List, Union
 import re
 
@@ -12,6 +6,10 @@ from rasa_sdk.executor import CollectingDispatcher
 from rasa_sdk.forms import FormAction
 from rasa_sdk.events import SlotSet
 from rasa_sdk.events import UserUtteranceReverted
+
+from app.resources.chatbot_helper import ChatbotHelper
+
+chatbot_helper = ChatbotHelper()
 
 class RegistForm(FormAction):
 
@@ -39,19 +37,21 @@ class RegistForm(FormAction):
         while i >= 0 and tracker.events[i]["event"] != "bot":
             i -= 1
 
-        if tracker.events[i]["event"] == "bot":
-            if tracker.events[i]["text"] == ask_nama:
-                dispatcher.utter_message("Hai {}".format(tracker.latest_message["text"]))
-                return [SlotSet("nama", tracker.latest_message["text"])]
-            if tracker.events[i]["text"] == ask_email:
-                regex_validator = '^[a-z0-9]+[\._]?[a-z0-9]+[@]\w+[.]\w{2,3}$'
-                for word in tracker.latest_message["text"].split():
-                    if '@' in tracker.latest_message["text"] and re.search(regex_validator, word):
-                        return [SlotSet("email", word)]
-                else:
-                    dispatcher.utter_message("Email yang kamu masukan tidak valid")
-            if tracker.events[i]["text"] == ask_telfon:
-                return [SlotSet("no_telfon", tracker.latest_message["text"])]
+        tracker_event, tracker_text, latest_message = tracker.events[i]["event"], tracker.events[i]["text"], tracker.latest_message["text"]
+
+        if tracker_event == "bot":
+            if tracker_text == ask_nama:
+                dispatcher.utter_message("Hai {}".format(latest_message))
+                return [SlotSet("nama", latest_message)]
+
+            if tracker_text == ask_email:
+                email = chatbot_helper.email_validation(latest_message)
+                if email:
+                    return [SlotSet("email", email)]
+                dispatcher.utter_message("Email yang kamu masukan tidak valid")
+
+            if tracker_text == ask_telfon:
+                return [SlotSet("no_telfon", latest_message)]
 
         return []
 
