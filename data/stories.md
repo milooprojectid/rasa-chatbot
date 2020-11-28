@@ -19,5 +19,3 @@
   - regist_form
   - form{"name": "regist_form"}   <!--Activate the form-->
   - form{"name": null} 
-  - utter_regist_success
-
