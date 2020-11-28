@@ -10,6 +10,8 @@ intents:
   - deny
 
 slots:
+  event_conf:
+    type: text
   nama:
     type: text
   email:
@@ -36,7 +38,7 @@ responses:
   utter_thanks:
     - text: "Sama-sama"
 
-  utter_conf_event:
+  utter_ask_event_conf:
     - text: "Selamat datang di form registrasi event Miloo. Kamu akan dipandu untuk mengisi form registrasi. Apakah kamu bersedia melanjutkan?"
 
   utter_regist_success:

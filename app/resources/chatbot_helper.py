@@ -1,13 +1,10 @@
-import re
-
-class ChatbotHelper(object):
+class ChatbotHelper():
 
     def __init__(self):
         pass
 
-    def email_validation(self, text: str):
-        regex_validator = '^[a-z0-9]+[\._]?[a-z0-9]+[@]\w+[.]\w{2,3}$'
-        for word in text.split():
-            if re.match(regex_validator, word):
-                return word
-        return 
+    def get_event_index(self, tracker_event):
+        i = len(tracker_event) - 1
+        while i >= 0 and tracker_event[i]["event"] != "bot":
+            i -= 1
+        return i

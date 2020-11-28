@@ -16,15 +16,8 @@
 
 ## Regist_event_succeed
 * regist_event
-  - utter_conf_event
-* affirm
   - regist_form
   - form{"name": "regist_form"}   <!--Activate the form-->
   - form{"name": null} 
   - utter_regist_success
 
-## Regist_event_failed
-* regist_event
-  - utter_conf_event
-* deny
-  - utter_regist_failed
