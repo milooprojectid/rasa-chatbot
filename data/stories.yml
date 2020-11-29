@@ -27,5 +27,3 @@ stories:
   - intent: regist_event
   - action: regist_form
   - active_loop: regist_form
-  # - form{"name": "regist_form"}   <!--Activate the form-->
-  # - form{"name": null} 

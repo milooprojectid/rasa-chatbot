@@ -6,11 +6,13 @@ from rasa_sdk.executor import CollectingDispatcher
 from rasa_sdk.forms import FormAction
 from rasa_sdk.events import SlotSet, UserUtteranceReverted
 
-from app.resources.chatbot_validator import ChatbotValidator
-from app.resources.chatbot_helper import ChatbotHelper
+from actions.resources.chatbot_validator import ChatbotValidator
+from actions.resources.chatbot_helper import ChatbotHelper
+from actions.resources.db_helper import DBHelper
 
 chatbot_validator = ChatbotValidator()
 chatbot_helper = ChatbotHelper()
+db_helper = DBHelper()
 
 class RegistForm(FormAction):
 
@@ -74,7 +76,16 @@ class RegistForm(FormAction):
             dispatcher.utter_message('Terima kasih sudah memberikan tanggapan.')
             return [SlotSet(row, None) for row in self.required_slots(tracker)]
 
-        dispatcher.utter_message("Terima kasih {}, data kamu sudah berhasil disimpan".format(tracker.slots["nama"]))
-        dispatcher.utter_message("Berikut merupakan data yang kamu masukan\nNama: {}\nEmail: {}\nNo.Telfon: {}".format(tracker.slots["nama"], tracker.slots["email"], tracker.slots["no_telfon"]))
+        res, status_code = db_helper.post({
+            'nama': tracker.slots['nama'],
+            'email': tracker.slots['email'],
+            'no_telfon': tracker.slots['no_telfon']
+        })
+        
+        if status_code == 200:
+            dispatcher.utter_message("Terima kasih {}, data kamu sudah berhasil disimpan".format(tracker.slots["nama"]))
+            dispatcher.utter_message("Berikut merupakan data yang kamu masukan\nNama: {}\nEmail: {}\nNo.Telfon: {}".format(tracker.slots["nama"], tracker.slots["email"], tracker.slots["no_telfon"]))
+        
+            return []
 
-        return []
+        return [SlotSet(row, None) for row in self.required_slots(tracker)]
