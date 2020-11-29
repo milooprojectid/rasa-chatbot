@@ -1,11 +1,10 @@
 from typing import Any, Text, Dict, List, Union
 import re
 
-from rasa_sdk import Action, Tracker
+from rasa_sdk import Action, Tracker, FormValidationAction
 from rasa_sdk.executor import CollectingDispatcher
 from rasa_sdk.forms import FormAction
-from rasa_sdk.events import SlotSet
-from rasa_sdk.events import UserUtteranceReverted
+from rasa_sdk.events import SlotSet, UserUtteranceReverted
 
 from app.resources.chatbot_validator import ChatbotValidator
 from app.resources.chatbot_helper import ChatbotHelper
