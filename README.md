@@ -5,6 +5,8 @@ Repository for MilooBot FAQ
 
 To install, type this on terminal/command prompt
 
+    $ git clone https://github.com/milooprojectid/rasa-chatbot.git
+    $ cd rasa-chatbot
     $ pip install -r requirements.txt
     
 ## Train data
