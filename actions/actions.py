@@ -16,6 +16,8 @@ db_helper = DBHelper()
 
 class RegistForm(FormAction):
 
+    already_registered: bool = False
+
     def name(self):
         return "regist_form"
 
@@ -23,8 +25,8 @@ class RegistForm(FormAction):
     def required_slots(tracker):
         return [
             'event_conf',
-            'nama',
             'email',
+            'nama',
             'no_telfon'
             ]
 
@@ -51,17 +53,25 @@ class RegistForm(FormAction):
             if tracker_text == ask_event_conf:
                 if tracker.latest_message['intent']['name'] == 'affirm':
                     return [SlotSet('event_conf', 'yes')]
-                return [SlotSet(row, 0) for row in self.required_slots(tracker)]
-
-            if tracker_text == ask_nama:
-                dispatcher.utter_message('Hai {}'.format(latest_message))
-                return [SlotSet('nama', latest_message)]
+                elif tracker.latest_message['intent']['name'] == 'deny':
+                    return [SlotSet(row, 0) for row in self.required_slots(tracker)]
+                else:
+                    dispatcher.utter_message(chatbot_validator.not_valid_general)
 
             if tracker_text == ask_email:
                 email = chatbot_validator.email_validation(latest_message)
                 if email:
+                    res, status_code = db_helper.get(email)
+                    if res and status_code == 200:
+                        doc = res[0].to_dict()
+                        self.already_registered = True
+                        return [SlotSet(key, doc[key]) for key in doc]
                     return [SlotSet('email', email)]
-                dispatcher.utter_message('Email yang kamu masukan tidak valid')
+                dispatcher.utter_message(chatbot_validator.not_valid_email)
+
+            if tracker_text == ask_nama:
+                dispatcher.utter_message('Hai {}'.format(latest_message))
+                return [SlotSet('nama', latest_message)]
 
             if tracker_text == ask_telfon:
                 return [SlotSet('no_telfon', latest_message)]
@@ -76,13 +86,22 @@ class RegistForm(FormAction):
             dispatcher.utter_message('Terima kasih sudah memberikan tanggapan.')
             return [SlotSet(row, None) for row in self.required_slots(tracker)]
 
-        res, status_code = db_helper.post({
-            'nama': tracker.slots['nama'],
-            'email': tracker.slots['email'],
-            'no_telfon': tracker.slots['no_telfon']
-        })
+        if not self.already_registered:
+            res, status_code = db_helper.get(tracker.slots['email'])
+            if not res and status_code == 200:
+                res, status_code = db_helper.post({
+                    'nama': tracker.slots['nama'],
+                    'email': tracker.slots['email'],
+                    'no_telfon': tracker.slots['no_telfon']
+                })
+
+                if status_code == 200:
+                    dispatcher.utter_message("Terima kasih {}, data kamu sudah berhasil disimpan".format(tracker.slots["nama"]))
+                    dispatcher.utter_message("Berikut merupakan data yang kamu masukan\nNama: {}\nEmail: {}\nNo.Telfon: {}".format(tracker.slots["nama"], tracker.slots["email"], tracker.slots["no_telfon"]))
+                
+                    return []
         
-        if status_code == 200:
+        if self.already_registered:
             dispatcher.utter_message("Terima kasih {}, data kamu sudah berhasil disimpan".format(tracker.slots["nama"]))
             dispatcher.utter_message("Berikut merupakan data yang kamu masukan\nNama: {}\nEmail: {}\nNo.Telfon: {}".format(tracker.slots["nama"], tracker.slots["email"], tracker.slots["no_telfon"]))
         
