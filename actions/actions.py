@@ -9,10 +9,12 @@ from rasa_sdk.events import SlotSet, UserUtteranceReverted
 from actions.resources.chatbot_validator import ChatbotValidator
 from actions.resources.chatbot_helper import ChatbotHelper
 from actions.resources.db_helper import DBHelper
+from actions.models.user import User
 
 chatbot_validator = ChatbotValidator()
 chatbot_helper = ChatbotHelper()
-db_helper = DBHelper()
+
+user = User()
 
 class RegistForm(FormAction):
 
@@ -32,41 +34,43 @@ class RegistForm(FormAction):
             'pekerjaan',
             'data_conf',
             'data_valid'
-            ]
+        ]
 
     def validate(self,
                  dispatcher: CollectingDispatcher,
                  tracker: Tracker,
                  domain: Dict[Text, Any]) -> List[Dict]:
 
-        ask_event_conf = domain["responses"]["utter_ask_event_conf"][0]["text"]
-        ask_nama = domain["responses"]["utter_ask_nama"][0]["text"]
-        ask_email = domain["responses"]["utter_ask_email"][0]["text"]
-        ask_telfon = domain["responses"]["utter_ask_no_telfon"][0]["text"]
-        ask_pekerjaan = domain["responses"]["utter_ask_pekerjaan"][0]["text"]
-        ask_data_conf = domain["responses"]["utter_ask_data_conf"][0]["text"]
-        ask_wrong_data = domain["responses"]["utter_ask_data_valid"][0]["text"]
+        ask_event_conf = domain['responses']["utter_ask_event_conf"][0]["text"]
+        ask_nama = domain['responses']["utter_ask_nama"][0]["text"]
+        ask_email = domain['responses']["utter_ask_email"][0]["text"]
+        ask_telfon = domain['responses']["utter_ask_no_telfon"][0]["text"]
+        ask_pekerjaan = domain['responses']["utter_ask_pekerjaan"][0]["text"]
+        ask_data_conf = domain['responses']["utter_ask_data_conf"][0]["text"]
+        ask_wrong_data = domain['responses']["utter_ask_data_valid"][0]["text"]
 
         idx = chatbot_helper.get_event_index(tracker.events)
 
         tracker_event, tracker_text, latest_message = tracker.events[idx]['event'], tracker.events[idx]['text'], tracker.latest_message['text']
 
+        intent, confidence = tracker.latest_message['intent']['name'], tracker.latest_message['intent']['confidence']
+
         if latest_message == '/cancel':
-            return [SlotSet(row, 0) for row in self.required_slots(tracker)] 
+            return [SlotSet(row, 0) for row in self.required_slots(tracker)]
 
         if tracker_event == 'bot':
             if tracker_text == ask_event_conf:
-                if tracker.latest_message['intent']['name'] == 'affirm':
-                    return [SlotSet('event_conf', 'yes')]
-                elif tracker.latest_message['intent']['name'] == 'deny':
-                    return [SlotSet(row, 0) for row in self.required_slots(tracker)]
-                else:
-                    dispatcher.utter_message(chatbot_validator.not_valid_general)
+                if confidence > 0.8:
+                    if intent == 'affirm':
+                        return [SlotSet('event_conf', 'yes')]
+                    if intent == 'deny':
+                        return [SlotSet(row, 0) for row in self.required_slots(tracker)]
+                dispatcher.utter_message(chatbot_validator.not_valid_general)
 
             if tracker_text == ask_email:
                 email = chatbot_validator.email_validation(latest_message)
                 if email:
-                    res, status_code = db_helper.get(email)
+                    res, status_code = user.read(email)
                     if res and status_code == 200:
                         doc = res[0].to_dict()
                         self.already_registered = True
@@ -86,23 +90,23 @@ class RegistForm(FormAction):
 
             if '\n' in tracker_text:
                 if tracker_text.split('\n')[-1] == ask_data_conf.split('\n')[-1]:
-                    if tracker.latest_message['intent']['name'] == 'affirm':
-                        return [
-                            SlotSet('data_conf', 'yes'),
-                            SlotSet('data_valid', 'yes')
-                        ]
-                    elif tracker.latest_message['intent']['name'] == 'deny':
-                        self.updated = True
-                        return [SlotSet('data_conf', 'no')]
-                    else:
-                        dispatcher.utter_message(chatbot_validator.not_valid_general)
+                    if confidence > 0.8:
+                        if intent == 'affirm':
+                            return [
+                                SlotSet('data_conf', 'yes'),
+                                SlotSet('data_valid', 'yes')
+                            ]
+                        if intent == 'deny':
+                            self.updated = True
+                            return [SlotSet('data_conf', 'no')]
+                    dispatcher.utter_message(chatbot_validator.not_valid_general)
 
             if tracker_text == ask_wrong_data:
-                if 'nama' in latest_message:
-                    return [
-                        SlotSet('nama', None),
-                        SlotSet('data_conf', None)
-                    ]
+                if intent == 'affirm' and confidence > 0.9:
+                    return [SlotSet('data_conf', None)]
+                slots = chatbot_validator.slot_validator(latest_message)
+                if slots:
+                    return [SlotSet(slot, None) for slot in slots]
 
         return []
 
