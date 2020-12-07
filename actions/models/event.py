@@ -1,18 +1,17 @@
+import datetime
 from actions.resources.db_helper import DBHelper
 
 db_helper = DBHelper()
 
-class User():
+class Event():
 
-    collection: str = 'users'
+    collection: str = 'events'
 
     def create(self, data: dict):
 
         payload = {
-            u'nama': data['nama'],
-            u'email': data['email'],
-            u'no_telfon': data['no_telfon'],
-            u'pekerjaan': data['pekerjaan']
+            u'user': data['user'],
+            u'tanggal': datetime.datetime.now
         }
 
         return db_helper.post(payload, self.collection)

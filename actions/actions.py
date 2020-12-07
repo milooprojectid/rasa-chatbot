@@ -9,12 +9,12 @@ from rasa_sdk.events import SlotSet, UserUtteranceReverted
 from actions.resources.chatbot_validator import ChatbotValidator
 from actions.resources.chatbot_helper import ChatbotHelper
 from actions.resources.db_helper import DBHelper
-from actions.models.user import User
+from actions.models import user, event
 
 chatbot_validator = ChatbotValidator()
 chatbot_helper = ChatbotHelper()
 
-user = User()
+user = user.User()
 
 class RegistForm(FormAction):
 
@@ -50,9 +50,7 @@ class RegistForm(FormAction):
         ask_wrong_data = domain['responses']["utter_ask_data_valid"][0]["text"]
 
         idx = chatbot_helper.get_event_index(tracker.events)
-
         tracker_event, tracker_text, latest_message = tracker.events[idx]['event'], tracker.events[idx]['text'], tracker.latest_message['text']
-
         intent, confidence = tracker.latest_message['intent']['name'], tracker.latest_message['intent']['confidence']
 
         if latest_message == '/cancel':
@@ -83,7 +81,10 @@ class RegistForm(FormAction):
                 return [SlotSet('nama', latest_message)]
 
             if tracker_text == ask_telfon:
-                return [SlotSet('no_telfon', latest_message)]
+                no_telfon = chatbot_validator.phone_number_validation(latest_message)
+                if no_telfon:
+                    return [SlotSet('no_telfon', no_telfon)]
+                dispatcher.utter_message(chatbot_validator.not_valid_phone_number)
 
             if tracker_text == ask_pekerjaan:
                 return [SlotSet('pekerjaan', latest_message)]
