@@ -10,8 +10,8 @@ class Event():
     def create(self, data: dict):
 
         payload = {
-            u'user': data['user'],
-            u'tanggal': datetime.datetime.now
+            u'user': data,
+            u'tanggal': datetime.datetime.now().__str__()
         }
 
         return db_helper.post(payload, self.collection)

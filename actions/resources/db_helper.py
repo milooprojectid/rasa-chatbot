@@ -26,3 +26,11 @@ class DBHelper():
             return docs, 200
         except Exception as e:
             return {'message': e}, 404
+
+    def put(self, id_: str, payload: dict, collection_name: str):
+        try:
+            doc_ref = self.db.collection(collection_name).document(id_)
+            doc_ref.update(payload)
+            return {'message': 'success'}, 200
+        except Exception as e:
+            return {'message': e}, 400

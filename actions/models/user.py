@@ -19,3 +19,14 @@ class User():
 
     def read(self, email: str):
         return db_helper.get(email, self.collection)
+
+    def edit(self, id_: str, data: dict):
+
+        payload = {
+            u'nama': data['nama'],
+            u'email': data['email'],
+            u'no_telfon': data['no_telfon'],
+            u'pekerjaan': data['pekerjaan']
+        }
+        
+        return db_helper.put(id_, payload, self.collection)

@@ -8,18 +8,19 @@ from rasa_sdk.events import SlotSet, UserUtteranceReverted
 
 from actions.resources.chatbot_validator import ChatbotValidator
 from actions.resources.chatbot_helper import ChatbotHelper
-from actions.resources.db_helper import DBHelper
 from actions.models import user, event
 
 chatbot_validator = ChatbotValidator()
 chatbot_helper = ChatbotHelper()
 
 user = user.User()
+event = event.Event()
 
 class RegistForm(FormAction):
 
     already_registered: bool = False
     updated: bool = False
+    id_: str = ''
 
     def name(self):
         return "regist_form"
@@ -41,17 +42,17 @@ class RegistForm(FormAction):
                  tracker: Tracker,
                  domain: Dict[Text, Any]) -> List[Dict]:
 
-        ask_event_conf = domain['responses']["utter_ask_event_conf"][0]["text"]
-        ask_nama = domain['responses']["utter_ask_nama"][0]["text"]
-        ask_email = domain['responses']["utter_ask_email"][0]["text"]
-        ask_telfon = domain['responses']["utter_ask_no_telfon"][0]["text"]
-        ask_pekerjaan = domain['responses']["utter_ask_pekerjaan"][0]["text"]
-        ask_data_conf = domain['responses']["utter_ask_data_conf"][0]["text"]
-        ask_wrong_data = domain['responses']["utter_ask_data_valid"][0]["text"]
+        ask_nama = domain['responses']['utter_ask_nama'][0]['text']
+        ask_email = domain['responses']['utter_ask_email'][0]['text']
+        ask_telfon = domain['responses']['utter_ask_no_telfon'][0]['text']
+        ask_pekerjaan = domain['responses']['utter_ask_pekerjaan'][0]['text']
+        ask_data_conf = domain['responses']['utter_ask_data_conf'][0]['text']
+        ask_wrong_data = domain['responses']['utter_ask_data_valid'][0]['text']
+        ask_event_conf = domain['responses']['utter_ask_event_conf'][0]['text']
 
         idx = chatbot_helper.get_event_index(tracker.events)
-        tracker_event, tracker_text, latest_message = tracker.events[idx]['event'], tracker.events[idx]['text'], tracker.latest_message['text']
         intent, confidence = tracker.latest_message['intent']['name'], tracker.latest_message['intent']['confidence']
+        tracker_event, tracker_text, latest_message = tracker.events[idx]['event'], tracker.events[idx]['text'], tracker.latest_message['text']
 
         if latest_message == '/cancel':
             return [SlotSet(row, 0) for row in self.required_slots(tracker)]
@@ -71,6 +72,7 @@ class RegistForm(FormAction):
                     res, status_code = user.read(email)
                     if res and status_code == 200:
                         doc = res[0].to_dict()
+                        self.id_ = res[0].id
                         self.already_registered = True
                         return [SlotSet(key, doc[key]) for key in doc]
                     return [SlotSet('email', email)]
@@ -119,27 +121,73 @@ class RegistForm(FormAction):
             dispatcher.utter_message('Terima kasih sudah memberikan tanggapan.')
             return [SlotSet(row, None) for row in self.required_slots(tracker)]
 
-        dispatcher.utter_message('terimakasih')
+        if not self.already_registered:
+            res, status_code = user.read(tracker.slots['email'])
+            if not res and status_code == 200:
+                res, status_code = user.create({
+                    'nama': tracker.slots['nama'],
+                    'email': tracker.slots['email'],
+                    'no_telfon': tracker.slots['no_telfon'],
+                    'pekerjaan': tracker.slots['pekerjaan']
+                })
 
-        # if not self.already_registered:
-        #     res, status_code = db_helper.get(tracker.slots['email'])
-        #     if not res and status_code == 200:
-        #         res, status_code = db_helper.post({
-        #             'nama': tracker.slots['nama'],
-        #             'email': tracker.slots['email'],
-        #             'no_telfon': tracker.slots['no_telfon']
-        #         })
-
-        #         if status_code == 200:
-        #             dispatcher.utter_message("Terima kasih {}, data kamu sudah berhasil disimpan".format(tracker.slots["nama"]))
+                if status_code != 200:
+                    dispatcher.utter_message('Maaf, data kamu gagal disimpan. Silahkan coba beberapa saat lagi!')
                 
-        #             return []
+                    return [SlotSet(row, None) for row in self.required_slots(tracker)]
+
+                dispatcher.utter_message('Data kamu sudah berhasil disimpan')
+
+                res, status_code = event.create({
+                    'nama': tracker.slots['nama'],
+                    'email': tracker.slots['email'],
+                    'no_telfon': tracker.slots['no_telfon'],
+                    'pekerjaan': tracker.slots['pekerjaan']
+                })
+
+                if status_code != 200:
+                    dispatcher.utter_message('Maaf, ada kendala teknis. Silahkan coba beberapa saat lagi!')
+
+                    return [SlotSet(row, None) for row in self.required_slots(tracker)]
+
+                dispatcher.utter_message('Kamu sudah terdaftar sebagai peserta Ngemil. Untuk tautan (link) Zoom akan diberitahukan melalui Email.')
+                
+            return [SlotSet(row, None) for row in self.required_slots(tracker)]
         
         if self.already_registered:
-            dispatcher.utter_message("Terima kasih {}, data kamu sudah berhasil disimpan".format(tracker.slots["nama"]))
+
+            if self.updated:
+                res, status_code = user.edit(self.id_, {
+                    'nama': tracker.slots['nama'],
+                    'email': tracker.slots['email'],
+                    'no_telfon': tracker.slots['no_telfon'],
+                    'pekerjaan': tracker.slots['pekerjaan']
+                })
+
+                self.updated = False
+                self.id_ = ''
+
+                if status_code != 200:
+                    dispatcher.utter_message('Maaf, data kamu gagal diperbarui. Silahkan coba beberapa saat lagi!')
+
+                    return [SlotSet(row, None) for row in self.required_slots(tracker)]
+
+                dispatcher.utter_message('Data kamu sudah berhasil diperbarui')
 
             self.already_registered = False
-        
-            return []
 
+            res, status_code = event.create({
+                'nama': tracker.slots['nama'],
+                'email': tracker.slots['email'],
+                'no_telfon': tracker.slots['no_telfon'],
+                'pekerjaan': tracker.slots['pekerjaan']
+            })
+
+            if status_code != 200:
+                dispatcher.utter_message('Maaf, ada kendala teknis. Silahkan coba beberapa saat lagi!')
+
+                return [SlotSet(row, None) for row in self.required_slots(tracker)]
+
+            dispatcher.utter_message('Kamu sudah terdaftar sebagai peserta Ngemil. Untuk tautan (link) Zoom akan diberitahukan melalui Email.')
+        
         return [SlotSet(row, None) for row in self.required_slots(tracker)]
