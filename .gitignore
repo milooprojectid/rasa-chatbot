@@ -1,7 +1,10 @@
-models/
+/models
+/results
 .ipynb_checkpoints
-test.py
-*.ipynb
-__pycache__/
-venv
 .DS_Store
+.vscode
+__pycache__/
+*.ipynb
+test.py
+venv
+configs/

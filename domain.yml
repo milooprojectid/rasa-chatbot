@@ -10,11 +10,19 @@ intents:
   - deny
 
 slots:
+  event_conf:
+    type: text
   nama:
     type: text
   email:
     type: text
   no_telfon:
+    type: text
+  pekerjaan:
+    type: text
+  data_conf:
+    type: text
+  data_valid:
     type: text
 
 actions:
@@ -36,7 +44,27 @@ responses:
   utter_thanks:
     - text: "Sama-sama"
 
-  utter_conf_event:
+  # FAQ
+  utter_faq/miloo:
+    - text: "Miloo Project adalah sebuah platform gerakan pemenuhan skill anak muda. Disini kita akan belajar dunia Hacker, Hipster, Hound, dan Hustler. Ikuti info setiap kegiatannya di Instagram @miloo.project agar kita bisa sama-sama membangun SDM yang maju."
+
+  utter_faq/visi:
+    - text: "Miloo fokus pada 4 kegiatan utamanya. yakni Sharing, Research, Develoment dan Campaign."
+
+  utter_faq/misi:
+    - text: "Tujuan utamanya yakni ingin memperkecil gap kebutuhan Indonesia terhadap tenaga kerja berskill yang tiap tahunnya kekurangan 3,8 juta."
+
+  utter_faq/hq:
+    - text: "Markas besar miloo berada di Jalan Danau Laut Tawar no A69, Bendungan Hilir, Jakarta Pusat"
+
+  utter_faq/channel:
+    - text: "Kamu bisa cek miloo di\nInstagram: https://www.instagram.com/miloo.project/ \nLinkedin: https://www.linkedin.com/company/milooproject/\nFacebook page: https://www.facebook.com/milooproject/ \nSpotify: https://open.spotify.com/show/1fbywVKi9L0ebmDErFkhLX?si=290GXrsnSdyrCyY2md_cYQ \nKumparan Story: https://kumparan.com/milo-project)\nYoutube: https://www.youtube.com/channel/UCZO6kJMmGEp05ITnwICxl_A"
+
+  utter_faq/event:
+    - text: "Jadwal event akan kami infokan di channel dan akun media sosial miloo, jadi pantengin terus yaa"
+
+  # Regist Form
+  utter_ask_event_conf:
     - text: "Selamat datang di form registrasi event Miloo. Kamu akan dipandu untuk mengisi form registrasi. Apakah kamu bersedia melanjutkan?"
 
   utter_regist_success:
@@ -52,10 +80,19 @@ responses:
     - text: "Apa email kamu?"
 
   utter_ask_no_telfon:
-    - text: "no telfon?"
+    - text: "Berapa nomor telfon kamu?"
+
+  utter_ask_pekerjaan:
+    - text: "Apa pekerjaan kamu saat ini?"
+
+  utter_ask_data_conf:
+    - text: "Berikut merupakan data yang kamu masukan\nNama: {nama}\nEmail: {email}\nNo.Telfon: {no_telfon}\nPekerjaan: {pekerjaan}\nApa data tersebut sudah benar?"
+
+  utter_ask_data_valid:
+    - text: "Data mana yang masih salah?"
 
   utter_default:
-    - text: Maaf, saya tidak mengerti apa yang kamu tanyakan.
+    - text: "Maaf, saya tidak mengerti apa yang kamu tanyakan."
 
 session_config:
   session_expiration_time: 60
