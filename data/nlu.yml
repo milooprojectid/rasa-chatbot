@@ -80,6 +80,8 @@ nlu:
     - yup
     - yes
     - benar
+    - sudah benar
+    - sudah
     - bersedia
     - lanjut
     - lanjutkan
@@ -105,6 +107,13 @@ nlu:
     - ga mau
     - jangan
     - jangan dilanjutkan
+
+- intent: event_history
+  examples: |
+    - riwayat
+    - history
+    - history event
+    - riwayat event
 
 - intent: thanks
   examples: |

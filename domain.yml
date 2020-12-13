@@ -8,6 +8,7 @@ intents:
   - regist_event
   - affirm
   - deny
+  - event_history
 
 slots:
   event_conf:
@@ -30,6 +31,7 @@ actions:
 
 forms:
   - regist_form
+  - history_form
 
 responses:
   utter_greet:

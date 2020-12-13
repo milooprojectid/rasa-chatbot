@@ -22,8 +22,14 @@ stories:
   - intent: faq
   - action: utter_faq
 
-- story: Regist_event_succeed
+- story: Regist event
   steps:
   - intent: regist_event
   - action: regist_form
   - active_loop: regist_form
+
+- story: History event
+  steps:
+  - intent: event_history
+  - action: history_form
+  - active_loop: history_form
