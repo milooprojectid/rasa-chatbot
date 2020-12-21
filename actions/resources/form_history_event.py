@@ -18,7 +18,7 @@ event = event.Event()
 
 class HistoryForm(FormAction):
 
-    self.events: list = []
+    events: list = []
 
     def name(self):
         return "history_form"
@@ -48,9 +48,9 @@ class HistoryForm(FormAction):
                 if email:
                     res, status_code = user.read(email)
                     if res and status_code == 200:
-                        doc = res[0].to_dict()
-                        return [SlotSet(key, doc[key]) for key in doc]
-                    return [SlotSet('email', email)]
+                        return [SlotSet('email', email)]
+                    dispatcher.utter_message(chatbot_validator.email_not_found)
+                    return []
                 dispatcher.utter_message(chatbot_validator.not_valid_email)
         
         return []
@@ -59,7 +59,14 @@ class HistoryForm(FormAction):
             tracker: Tracker,
             domain: Dict[Text, Any],) -> List[Dict]:
 
-        if tracker.slots['event_conf'] == 0:
+        if tracker.slots['email'] == 0:
             dispatcher.utter_message('Terima kasih sudah memberikan tanggapan.')
-        
+
+        res, status_code = event.read(tracker.slots['email'])
+        if res and status_code == 200:
+            for doc in res:
+                self.events.append(doc.to_dict())
+            dispatcher.utter_message(str(self.events))
+
+        self.events = []
         return [SlotSet(row, None) for row in self.required_slots(tracker)]

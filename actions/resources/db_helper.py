@@ -1,4 +1,4 @@
-from firebase_admin import credentials,firestore
+from firebase_admin import credentials, firestore
 import firebase_admin
 
 import uuid
@@ -34,3 +34,33 @@ class DBHelper():
             return {'message': 'success'}, 200
         except Exception as e:
             return {'message': e}, 400
+
+# import re
+# from datetime import datetime
+
+# if __name__ == '__main__':
+#     a = []
+#     tanggal = '2020-12-08 19:44:34.849431'
+#     # tanggal_split = tanggal.split(':')
+#     # tanggal_split[-1] = str(round(float(tanggal_split[-1])))
+
+#     datetime_format = '%Y-%m-%d %H:%M:%S.%f'
+#     datetime_object = datetime.strptime(tanggal, datetime_format)
+#     print(type(datetime_object))
+#     print(datetime_object)
+#     a.append(datetime_object)
+#     # tanggal_final = ':'.join(tanggal_split)
+
+
+# from datetime import datetime
+
+# datetime_str = '09/19/18 13:55:26'
+
+# datetime_object = datetime.strptime(datetime_str, '%m/%d/%y %H:%M:%S')
+
+# print(type(datetime_object))
+# print(datetime_object)  # printed in default format
+
+# a.append(datetime_object)
+
+# print(sorted(a, reverse=True)[:1])
