@@ -11,7 +11,13 @@ class Event():
 
         payload = {
             u'user': data,
-            u'tanggal': datetime.datetime.now().__str__()
+            u'email': data['email'],
+            u'tanggal': datetime.datetime.now().__str__(),
+            u'detail': {
+                'nama': 'Judul event',
+                'jenis': 'Ngemil',
+                'kategori': 'Hacker'
+            }
         }
 
         return db_helper.post(payload, self.collection)
