@@ -7,11 +7,12 @@ from rasa_sdk.forms import FormAction
 from rasa_sdk.events import SlotSet
 
 from actions.resources.chatbot_validator import ChatbotValidator
-from actions.resources.chatbot_helper import ChatbotHelper
+from actions.resources.chatbot_helper import ChatbotHelper, EventHelper
 from actions.models import user, event
 
 chatbot_validator = ChatbotValidator()
 chatbot_helper = ChatbotHelper()
+event_helper = EventHelper()
 
 user = user.User()
 event = event.Event()
@@ -66,7 +67,8 @@ class HistoryForm(FormAction):
         if res and status_code == 200:
             for doc in res:
                 self.events.append(doc.to_dict())
-            dispatcher.utter_message(str(self.events))
+            dispatcher.utter_message(str(event_helper.get_events(self.events)))
+            # dispatcher.utter_message(str(self.events))
 
         self.events = []
         return [SlotSet(row, None) for row in self.required_slots(tracker)]
